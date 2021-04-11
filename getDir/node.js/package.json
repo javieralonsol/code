@@ -1,0 +1,17 @@
+{
+  "name": "getdir",
+  "version": "1.0.0",
+  "description": "",
+  "main": "getDir.js",
+  "dependencies": {
+    "image-size": "^0.9.7",
+    "nodemon": "^2.0.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
