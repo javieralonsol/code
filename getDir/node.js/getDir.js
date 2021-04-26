@@ -4,14 +4,18 @@ const fs = require('fs').promises;
 const path = require('path');
 const sizeOf = require('image-size');
 
-async function getDir(dirPath, settings = {}, arrayResults = []) {
+async function getDir(dirPath, options = {}, arrayResults = []) {
   // options:
   //   arrayExcludeExtensions
   //   arrayIncludeExtensions
   //   arrayExcludeFiles
   //   arrayIncludeFiles
+  //   arrayExcludeFilesContains
+  //   arrayIncludeFilesContains
   //   arrayExcludeFolders
   //   arrayIncludeFolders
+  //   arrayExcludeFoldersContains
+  //   arrayIncludeFoldersContains
   //   arrayExcludeParentFolders
   //   arrayIncludeParentFolders
   //   boolHideEmptyFolders
@@ -33,18 +37,25 @@ async function getDir(dirPath, settings = {}, arrayResults = []) {
       const stat = await fs.stat(newPath);
 
       if (stat.isDirectory()) {
-        if (settings['arrayExcludeFolders']?.includes(element)) {
+        if (options['arrayExcludeFolders']?.includes(element)) {
           return false;
         }
 
-        if (!settings['boolHideEmptyFolders'] || settings['boolOnlyFolders']) {
+        if (
+          options['arrayIncludeFoldersContains']?.every((item) => !element.includes(item)) ||
+          options['arrayExcludeFoldersContains']?.some((item) => element.includes(item))
+        ) {
+          return false;
+        }
+
+        if (!options['boolHideEmptyFolders'] || options['boolOnlyFolders']) {
           arrayResults[newPath] = [];
         }
 
-        if (!settings['boolNotRecursive']) {
-          arrayResults = await getDir(newPath, settings, arrayResults);
+        if (!options['boolNotRecursive']) {
+          arrayResults = await getDir(newPath, options, arrayResults);
         }
-      } else if (!settings['boolOnlyFolders']) {
+      } else if (!options['boolOnlyFolders']) {
         const elementExtension = element.split('.').pop();
         const baseName = path.basename(dirPath);
 
@@ -59,15 +70,22 @@ async function getDir(dirPath, settings = {}, arrayResults = []) {
         };
 
         for (const rule in rules) {
-          if (settings[rule] && settings[rule].some((item) => [rules[rule][0]].includes(item)) === rules[rule][1]) {
+          if (options[rule] && options[rule].some((item) => [rules[rule][0]].includes(item)) === rules[rule][1]) {
             return false;
           }
+        }
+
+        if (
+          options['arrayIncludeFilesContains']?.every((item) => !element.includes(item)) ||
+          options['arrayExcludeFilesContains']?.some((item) => element.includes(item))
+        ) {
+          return false;
         }
 
         arrayResults[dirPath] = arrayResults[dirPath] || [];
         arrayResults[dirPath][element] = {};
 
-        if (settings['boolWithFileInfo']) {
+        if (options['boolWithFileInfo']) {
           arrayResults[dirPath][element] = {
             modified: stat.mtime,
             created: stat.ctime,
@@ -75,7 +93,7 @@ async function getDir(dirPath, settings = {}, arrayResults = []) {
           };
         }
 
-        if (settings['boolWithImageDimensions']) {
+        if (options['boolWithImageDimensions']) {
           try {
             arrayResults[dirPath][element] = { ...arrayResults[dirPath][element], ...sizeOf(newPath) };
           } catch (error) {}

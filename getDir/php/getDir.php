@@ -1,13 +1,17 @@
 <?php
 
-function getDir($dirPath, $optionss = [], &$arrayResults = []) {
+function getDir($dirPath, $options = [], &$arrayResults = []) {
   // $options:
   //   $arrayExcludeExtensions
   //   $arrayIncludeExtensions
   //   $arrayExcludeFiles
   //   $arrayIncludeFiles
+  //   arrayExcludeFilesContains
+  //   arrayIncludeFilesContains
   //   $arrayExcludeFolders
   //   $arrayIncludeFolders
+  //   $arrayExcludeFoldersContains
+  //   $arrayIncludeFoldersContains
   //   $arrayExcludeParentFolders
   //   $arrayIncludeParentFolders
   //   $boolHideEmptyFolders
@@ -25,23 +29,37 @@ function getDir($dirPath, $optionss = [], &$arrayResults = []) {
     $newPath = $dirPath . DIRECTORY_SEPARATOR . $element;
 
     if (is_dir($newPath)) {
-      if (in_array(
-        $element,
-        array_merge(['.', '..'],
-        $optionss['arrayExcludeFolders'] ?? []))) {
+      if (in_array($element, array_merge(['.', '..'], $options['arrayExcludeFolders'] ?? []))) {
         continue;
       }
 
       if (
-        empty($optionss['boolHideEmptyFolders']) ||
-        !empty($optionss['boolOnlyFolders'])) {
-        $arrayResults[($newPath)] = [];
+        @array_reduce(
+          $options['arrayIncludeFoldersContains'],
+          function ($acc, $item) use ($element) {
+            return $acc && strpos($element, $item) === false;
+          },
+          true
+        ) ||
+        @array_reduce(
+          $options['arrayExcludeFoldersContains'],
+          function ($acc, $item) use ($element) {
+            return $acc || strpos($element, $item) !== false;
+          },
+          false
+        )
+      ) {
+        continue;
       }
 
-      if (empty($optionss['boolNotRecursive'])) {
-        getDir($newPath, $optionss, $arrayResults);
+      if (empty($options['boolHideEmptyFolders']) || !empty($options['boolOnlyFolders'])) {
+        $arrayResults[$newPath] = [];
       }
-    } elseif (empty($optionss['boolOnlyFolders'])) {
+
+      if (empty($options['boolNotRecursive'])) {
+        getDir($newPath, $options, $arrayResults);
+      }
+    } elseif (empty($options['boolOnlyFolders'])) {
       $elementExtension = strtolower(pathinfo($element, PATHINFO_EXTENSION));
       $basename = basename($dirPath);
 
@@ -56,14 +74,33 @@ function getDir($dirPath, $optionss = [], &$arrayResults = []) {
       ];
 
       foreach ($rules as $key => $val) {
-        if (isset($optionss[$key]) && empty(array_intersect((array) $val[0], $optionss[$key])) !== $val[1]) {
+        if (isset($options[$key]) && empty(array_intersect((array) $val[0], $options[$key])) !== $val[1]) {
           continue 2;
         }
       }
 
+      if (
+        @array_reduce(
+          $options['arrayIncludeFilesContains'],
+          function ($acc, $item) use ($element) {
+            return $acc && strpos($element, $item) === false;
+          },
+          true
+        ) ||
+        @array_reduce(
+          $options['arrayExcludeFilesContains'],
+          function ($acc, $item) use ($element) {
+            return $acc || strpos($element, $item) !== false;
+          },
+          false
+        )
+      ) {
+        continue;
+      }
+
       $arrayResults[$dirPath][$element] = [];
 
-      if (!empty($optionss['boolWithFileInfo'])) {
+      if (!empty($options['boolWithFileInfo'])) {
         $arrayResults[$dirPath][$element] += [
           'created' => @filectime($newPath),
           'modified' => @filemtime($newPath),
@@ -72,8 +109,13 @@ function getDir($dirPath, $optionss = [], &$arrayResults = []) {
       }
 
       if (
-        !empty($optionss['boolWithImageDimensions']) &&
-        ([0 => $width, 1 => $height, 3 => $text, 'mime' => $type] = @getimagesize($newPath))
+        !empty($options['boolWithImageDimensions']) &&
+        ([
+          0 => $width,
+          1 => $height,
+          3 => $text,
+          'mime' => $type,
+        ] = @getimagesize($newPath))
       ) {
         $arrayResults[$dirPath][$element] += [
           'height' => $height,
@@ -91,7 +133,7 @@ function getDir($dirPath, $optionss = [], &$arrayResults = []) {
 // si es una llamada directa (no a traves de un include)
 $directCall = debug_backtrace();
 
-if(!array_shift($directCall)){
+if (!array_shift($directCall)) {
   header('Content-Type: text/html; charset=utf-8');
   ini_set('default_charset', 'utf-8');
   error_reporting(E_ALL);
@@ -107,6 +149,6 @@ if(!array_shift($directCall)){
     'boolWithImageDimensions' => true,
   ]);
 
-  echo '<pre>' . (microtime(true) - $microtime) .  print_r($arrayDir, true) . '</pre>';
+  echo '<pre>' . (microtime(true) - $microtime) . print_r($arrayDir, true) . '</pre>';
 }
 ?>
