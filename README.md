@@ -20,3 +20,7 @@ Reference-style:
 ![alt text][logo]
 
 [logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+
+[![](https://www.alonso-lopez.es/pixel.webp?git-code-2)](https://github.com/anuraghazra/github-readme-stats)
+
+[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=javieralonsol&repo=code)](https://github.com/anuraghazra/github-readme-stats)
