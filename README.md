@@ -9,4 +9,6 @@ List and filter files and folders recursively with PHP or Node.js
 
  [Link to article in linkedin](https://www.linkedin.com/pulse/listar-y-filtrar-archivos-carpetas-recursivamente-con-alonso-l%C3%B3pez-1e/)
 
- [stats]: https://www.alonso-lopez.es/pixel.webp?git-code "stats"
+ ![](https://www.alonso-lopez.es/pixel.webp?git-code "")
+
+ ![](https://www.tegla.es/media/treze/400/lapiz-8-01.webp?git-code "")
