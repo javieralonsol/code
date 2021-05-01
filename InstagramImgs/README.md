@@ -11,10 +11,6 @@
 5. Pulsa el botón derecho del ratón en cualquier parte de la página. Aparecerán las imagenes
 6. Pon el ratón encima de cada una y con el botón derecho las podrás guardar
 
-
-
-
-
 #### Download Instagram images in highest resolution:
 1. Copy the code (better the minified)
 2. Navigate to the *storie* where you want to download the images
