@@ -24,4 +24,4 @@
 
 <p><img src="https://www.tegla.es/media/treze/1600/escul-6-01.webp"></p>
 
-<p><img src="https://views.whatilearened.today/views/github/javieralonsol-instagramImgs/views.svg>" /></p>
+<p><img src="https://views.whatilearened.today/views/github/javieralonsol-instagramImgs/views.svg" /></p>
