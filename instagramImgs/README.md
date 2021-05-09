@@ -21,7 +21,3 @@
 4. View the images you want to download (without leaving the page)
 5. Right-click anywhere on the page. The images will appear
 6. Put the mouse over each one and with the right button you can save them
-
-<p><img src="https://www.alonso-lopez.es/stats.php"></p>
-
-<p><img src="https://views.whatilearened.today/views/github/javieralonsol-instagramImgs/views.svg" /></p>
