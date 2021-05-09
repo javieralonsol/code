@@ -1,4 +1,4 @@
-# InstagramImgs
+# instagramImgs
 
 #### Descargar las imágenes de Instagram en la resolución más alta:
 1. Copia el código (mejor el minificado)
@@ -24,4 +24,4 @@
 
 <p><img src="https://www.tegla.es/media/treze/1600/escul-6-01.webp"></p>
 
-<p><img src="https://views.whatilearened.today/views/github/javieralonsol/code/instagramsImgs/views.svg>" /></p>
+<p><img src="https://views.whatilearened.today/views/github/javieralonsol-instagramImgs/views.svg>" /></p>
